@@ -1,5 +1,10 @@
 import React from 'react';
 import Aux from '../../hoc/Aux';
+import styled from 'styled-components';
+
+const Content = styled.main`
+  margin-top: 16px;
+`;
 
 function layout(props) {
   const { children } = props;
@@ -8,9 +13,9 @@ function layout(props) {
       <div>
         Toolbar, SideDrawer, Backdrop
       </div>
-      <main>
+      <Content>
         {children}
-      </main>
+      </Content>
     </Aux>
   );
 }
