@@ -112,7 +112,7 @@ const Bacon = styled.div`
   margin: 2% auto;
 `;
 
-function BurgerIngredient(props) {
+function burgerIngredient(props) {
   const { type } = props;
   const ingredientsDictionary = {
     'bread-bottom': <BreadBottom />,
@@ -124,15 +124,15 @@ function BurgerIngredient(props) {
     ),
     'meat': <Meat />,
     'cheese': <Cheese />,
-    'Bacon': <Bacon />,
+    'bacon': <Bacon />,
     'salad': <Salad />,
   };
   const ingredient = ingredientsDictionary[type] || null;
   return ingredient;
 }
 
-BurgerIngredient.propTypes ={
+burgerIngredient.propTypes ={
   type: PropTypes.string.isRequired,
 };
 
-export default BurgerIngredient;
+export default burgerIngredient;

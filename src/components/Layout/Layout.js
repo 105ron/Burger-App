@@ -1,6 +1,6 @@
 import React from 'react';
-import Aux from '../../hoc/Aux';
 import styled from 'styled-components';
+import Aux from '../../hoc/Aux';
 
 const Content = styled.main`
   margin-top: 16px;
