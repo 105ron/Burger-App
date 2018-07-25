@@ -21,17 +21,24 @@ const Burger = styled.div`
   }
   @media (min-width: 1000px) and (min-height: 700px) {
     width: 700px;
-    height: 600px;
+    height: 450px;
   }
 `;
 
 function burger(props) {
   const { ingredients } = props;
-  const transformedIngredients = Object.keys(ingredients).map((igKey) => {
+  let transformedIngredients = Object.keys(ingredients).map((igKey) => {
     return [...Array(ingredients[igKey])].map((_, i) => (
       <BurgerIngredient key={igKey + i} type={igKey} />
     ));
-  });
+  }).reduce((arr, el) => arr.concat(el), []);
+  if (transformedIngredients.length === 0) {
+    transformedIngredients = (
+      <p>
+        Please start  adding ingredients
+      </p>
+    );
+  }
   return (
     <Burger>
       <BurgerIngredient type="bread-top" />
