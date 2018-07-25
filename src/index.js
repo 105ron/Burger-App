@@ -5,6 +5,7 @@ import App from './App';
 import globalCSS from './globalStyle/globalCss';
 import registerServiceWorker from './registerServiceWorker';
 
+console.log(`${globalCSS}`)
 injectGlobal`${globalCSS}`;
 
 
