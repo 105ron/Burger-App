@@ -54,16 +54,21 @@ const MoreButton = LessButton.extend`
 `;
 
 function buildControl(props) {
-  const { label } = props;
+  const {
+    label, added, removed, disabled,
+  } = props;
   return (
     <BuildControl>
       <Label>
         {label}
       </Label>
-      <MoreButton>
+      <MoreButton onClick={added}>
         More
       </MoreButton>
-      <LessButton>
+      <LessButton
+        onClick={removed}
+        disabled={disabled}
+      >
         Less
       </LessButton>
     </BuildControl>
@@ -72,6 +77,9 @@ function buildControl(props) {
 
 buildControl.propTypes = {
   label: PropTypes.string.isRequired,
+  added: PropTypes.func.isRequired,
+  removed: PropTypes.func.isRequired,
+  disabled: PropTypes.bool.isRequired,
 };
 
 export default buildControl;

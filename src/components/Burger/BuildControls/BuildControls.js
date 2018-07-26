@@ -1,5 +1,6 @@
 import React from "react";
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import BuildControl from './BuildControl/BuildControl';
 
 const BuildControls = styled.div`
@@ -21,13 +22,26 @@ const controls = [
 ];
 
 function buildControls(props) {
+  const { ingredientAdded, ingredientRemoved, disabled } = props;
   return (
     <BuildControls>
       {controls.map(ctrl => (
-        <BuildControl key={ctrl.label} label={ctrl.label} />
+        <BuildControl
+          key={ctrl.label}
+          label={ctrl.label}
+          added={() => ingredientAdded(ctrl.type)}
+          removed={() => ingredientRemoved(ctrl.type)}
+          disabled={disabled[ctrl.type]}
+        />
       ))}
     </BuildControls>
   );
 }
+
+buildControls.propTypes = {
+  ingredientAdded: PropTypes.func.isRequired,
+  ingredientRemoved: PropTypes.func.isRequired,
+  disabled: PropTypes.object.isRequired,
+};
 
 export default buildControls;
