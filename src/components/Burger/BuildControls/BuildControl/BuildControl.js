@@ -15,7 +15,6 @@ const Label = styled.div`
   width: 80px;
 `;
 
-
 const LessButton = styled.button`
   display: block;
   font: inherit;

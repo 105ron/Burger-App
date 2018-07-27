@@ -59,6 +59,7 @@ function buildControls(props) {
     disabled,
     price,
     purchaseable,
+    ordered,
   } = props;
   return (
     <BuildControls>
@@ -80,8 +81,9 @@ function buildControls(props) {
       ))}
       <BuildButton
         disabled={!purchaseable}
+        onClick={ordered}
       >
-        BUILD
+        Order Now
       </BuildButton>
     </BuildControls>
   );
@@ -93,6 +95,7 @@ buildControls.propTypes = {
   disabled: PropTypes.object.isRequired,
   price: PropTypes.number.isRequired,
   purchaseable: PropTypes.bool.isRequired,
+  ordered: PropTypes.func.isRequired,
 };
 
 export default buildControls;
