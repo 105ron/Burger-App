@@ -13,3 +13,5 @@ class App extends Component {
 }
 
 export default App;
+
+/* eslint react/prefer-stateless-function: "off" */

@@ -4,16 +4,23 @@ import Aux from '../../../hoc/Aux';
 import Button from '../../UI/Button/Button';
 
 function orderSummary(props) {
-  const { ingredients, purchaseCancelled, purchaseContinued } = props;
+  const {
+    ingredients,
+    price,
+    purchaseCancelled,
+    purchaseContinued,
+  } = props;
   const ingredientSummary = Object.keys(ingredients)
     .map(igKey => (
-      <li key={igKey}>
-        <span style={{ textTransform: 'capitalize' }}>
-          {igKey}
-        </span>
-        &#58;&nbsp;
-        {ingredients[igKey]}
-      </li>
+      ingredients[igKey] ? (
+        <li key={igKey}>
+          <span style={{ textTransform: 'capitalize' }}>
+            {igKey}
+          </span>
+          &#58;&nbsp;
+          {ingredients[igKey]}
+        </li>
+      ) : null
     ));
 
   return (
@@ -27,6 +34,13 @@ function orderSummary(props) {
       <ul>
         {ingredientSummary}
       </ul>
+      <p>
+        <strong>
+          Total Price&#58;&nbsp;
+        </strong>
+        $
+        {price.toFixed(2)}
+      </p>
       <p>
         Continue to Checkout?
       </p>
@@ -48,6 +62,7 @@ function orderSummary(props) {
 
 orderSummary.propTypes = {
   ingredients: PropTypes.object.isRequired,
+  price: PropTypes.number.isRequired,
   purchaseContinued: PropTypes.func.isRequired,
   purchaseCancelled: PropTypes.func.isRequired,
 };

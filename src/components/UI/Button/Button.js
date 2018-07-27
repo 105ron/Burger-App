@@ -43,3 +43,5 @@ button.propTypes = {
 };
 
 export default button;
+
+/* eslint react/destructuring-assignment: "off" */
