@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Logo from '../../Logo/Logo';
+import NavigationItems from "../NavigationItems/NavigationItems";
 
 const Toolbar = styled.header`
   height: 56px;
@@ -20,6 +21,9 @@ const Toolbar = styled.header`
 
 const Nav = styled.nav`
   height: 100%;
+  @media (max-width: 499px) {
+    display: none;
+  }
 `;
 
 function toolbar(props) {
@@ -28,8 +32,10 @@ function toolbar(props) {
       <div>
         Menu
       </div>
-      <Logo />
-      <Nav />
+      <Logo height="80%" />
+      <Nav>
+        <NavigationItems />
+      </Nav>
     </Toolbar>
   );
 }
