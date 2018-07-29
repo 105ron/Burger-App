@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Logo from '../../Logo/Logo';
 import NavigationItems from "../NavigationItems/NavigationItems";
+import DrawerToggle from '../SideDrawer/DrawerToggle/DrawerToggle';
 
 const Toolbar = styled.header`
   height: 56px;
@@ -27,11 +28,10 @@ const Nav = styled.nav`
 `;
 
 function toolbar(props) {
+  const { drawerToggleClicked } = props;
   return (
     <Toolbar>
-      <div>
-        Menu
-      </div>
+      <DrawerToggle clicked={drawerToggleClicked} />
       <Logo height="80%" />
       <Nav>
         <NavigationItems />
@@ -39,5 +39,9 @@ function toolbar(props) {
     </Toolbar>
   );
 }
+
+toolbar.propTypes = {
+  drawerToggleClicked: PropTypes.func.isRequired,
+};
 
 export default toolbar;

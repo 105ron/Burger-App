@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Logo from '../../Logo/Logo';
 import NavigationItems from '../NavigationItems/NavigationItems';
+import Backdrop from '../../UI/Backdrop/Backdrop';
+import Aux from '../../../hoc/Aux';
 
 const SideDrawer = styled.div`
   position: fixed;
@@ -15,8 +17,8 @@ const SideDrawer = styled.div`
   background-color: white;
   padding: 32px 16px;
   box-sizing: border-box;
-  transform: ${props => props.open ? 'translateX(0);' : 'translateX(-100);'}
-  transition: transform 03.s ease-out;
+  transform: ${props => props.show ? 'translateX(0);' : 'translateX(-100%);'}
+  transition: transform 0.3s ease-out;
   @media (min-width: 500px) {
     display: none;
   }
@@ -27,15 +29,24 @@ const NavBar = styled.nav`
 `;
 
 function sideDrawer(props) {
+  const { closed, open } = props;
   return (
-    <SideDrawer>
-      <Logo height="11%" />
-      <NavBar>
-        <NavigationItems />
-      </NavBar>
-    </SideDrawer>
+    <Aux>
+      <Backdrop show={open} click={closed} />
+      <SideDrawer show={open} style={open ? null : { transform: 'translateX(-100%)' }}>
+        <Logo height="11%" />
+        <NavBar>
+          <NavigationItems />
+        </NavBar>
+      </SideDrawer>
+    </Aux>
   );
 }
+
+sideDrawer.propTypes = {
+  closed: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+};
 
 export default sideDrawer;
 
