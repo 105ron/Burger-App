@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Aux from '../../../hoc/Aux';
+import Aux from '../../../hoc/Aux/Aux';
 import Backdrop from '../Backdrop/Backdrop';
 
 const ModalWrapper = styled.div`
@@ -25,7 +25,6 @@ const ModalWrapper = styled.div`
 class Modal extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { show } = this.props;
-    console.log((nextProps.show !== show));
     return (nextProps.show !== show);
   }
 
