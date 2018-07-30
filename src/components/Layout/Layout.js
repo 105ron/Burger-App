@@ -13,9 +13,9 @@ class Layout extends Component {
   constructor(props) {
     super(props);
     this.sideDrawerClosedHandler = this.sideDrawerClosedHandler.bind(this);
-    this.drawerToggleClicked = this.drawerToggleClicked.bind(this);
+    this.sideDrawerToggleHandler = this.sideDrawerToggleHandler.bind(this);
     this.state = {
-      showSideDrawer: true,
+      showSideDrawer: false,
     };
   }
 
@@ -23,10 +23,10 @@ class Layout extends Component {
     this.setState({ showSideDrawer: false });
   }
 
-  drawerToggleClicked() {
-    const { showSideDrawer } = this.state;
-    const drawerVisible = showSideDrawer;
-    this.setState({ showSideDrawer: !drawerVisible });
+  sideDrawerToggleHandler() {
+    this.setState(prevState => (
+      { showSideDrawer: !prevState.showSideDrawer }
+    ));
   }
 
   render() {
@@ -34,7 +34,7 @@ class Layout extends Component {
     const { showSideDrawer } = this.state;
     return (
       <Aux>
-        <Toolbar drawerToggleClicked={this.drawerToggleClicked} />
+        <Toolbar drawerToggleClicked={this.sideDrawerToggleHandler} />
         <SideDrawer
           open={showSideDrawer}
           closed={this.sideDrawerClosedHandler}

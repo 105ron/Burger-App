@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Aux from '../../../hoc/Aux';
 import Backdrop from '../Backdrop/Backdrop';
 
-const Modal = styled.div`
+const ModalWrapper = styled.div`
   position: fixed;
   z-index: 500;
   background-color: white;
@@ -22,30 +22,38 @@ const Modal = styled.div`
   }
 `;
 
-function modal(props) {
-  const { children, show, modalClosed } = props;
-  return (
-    <Aux>
-      <Backdrop
-        show={show}
-        click={modalClosed}
-      />
-      <Modal
-        style={{
-          tranform: show ? 'translateY(0)' : 'translateY(-100vh)',
-          opacity: show? '1' : '0',
-        }}
-      >
-        {children}
-      </Modal>
-    </Aux>
-  );
+class Modal extends Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    const { show } = this.props;
+    console.log((nextProps.show !== show));
+    return (nextProps.show !== show);
+  }
+
+  render() {
+    const { children, show, modalClosed } = this.props;
+    return (
+      <Aux>
+        <Backdrop
+          show={show}
+          click={modalClosed}
+        />
+        <ModalWrapper
+          style={{
+            tranform: show ? 'translateY(0)' : 'translateY(-100vh)',
+            opacity: show? '1' : '0',
+          }}
+        >
+          {children}
+        </ModalWrapper>
+      </Aux>
+    );
+  }
 }
 
-modal.propTypes = {
+Modal.propTypes = {
   children: PropTypes.object.isRequired,
   show: PropTypes.bool.isRequired,
   modalClosed: PropTypes.func.isRequired,
 };
 
-export default modal;
+export default Modal;
