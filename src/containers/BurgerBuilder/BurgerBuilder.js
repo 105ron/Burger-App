@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import Aux from '../../hoc/Aux/Aux';
+import axios from '../../axios-orders';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import Spinner from '../../components/UI/spinner/spinner';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -30,6 +32,7 @@ class BurgerBuilder extends Component {
       totalPrice: 4,
       purchaseable: false,
       purchasing: false,
+      loading: false,
     };
   }
 
@@ -50,7 +53,22 @@ class BurgerBuilder extends Component {
   }
 
   purchaseContinued() {
-    alert("you continue");
+    this.setState({ loading: true });
+    const { ingredients, totalPrice: price } = this.state;
+    const order = {
+      ingredients,
+      price,
+      address: {
+        street: '145 Evergreen Tce',
+        zipcode: '12345',
+        country: 'USA',
+      },
+      email: 'test@test.com',
+      deliveryMethod: 'mostEconomical',
+    };
+    axios.post('order.json', order)
+      .then(response => this.setState({ loading: false, purchasing: false }))
+      .catch(error => this.setState({ loading: false, purchasing: false }));
   }
 
   purchaseHandler() {
@@ -83,9 +101,21 @@ class BurgerBuilder extends Component {
     const {
       ingredients,
       totalPrice,
+      loading,
       purchaseable,
       purchasing,
     } = this.state;
+    let orderSummary = (
+      <OrderSummary
+        ingredients={ingredients}
+        price={totalPrice}
+        purchaseCancelled={this.purchaseCancelHandler}
+        purchaseContinued={this.purchaseContinued}
+      />
+    );
+    if (loading) {
+      orderSummary = <Spinner />;
+    }
     const disabledInfo = { ...ingredients };
     new Map(Object.entries(ingredients)).forEach((value, key) => {
       disabledInfo[key] = !value;
@@ -96,12 +126,7 @@ class BurgerBuilder extends Component {
           show={purchasing}
           modalClosed={this.purchaseCancelHandler}
         >
-          <OrderSummary
-            ingredients={ingredients}
-            price={totalPrice}
-            purchaseCancelled={this.purchaseCancelHandler}
-            purchaseContinued={this.purchaseContinued}
-          />
+          {orderSummary}
         </Modal>
         <Burger ingredients={ingredients} />
         <BuildControls
