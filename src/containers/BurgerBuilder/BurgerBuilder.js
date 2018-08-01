@@ -22,19 +22,21 @@ class BurgerBuilder extends Component {
     this.removeIngredientHandler = this.removeIngredientHandler.bind(this);
     this.purchaseHandler = this.purchaseHandler.bind(this);
     this.purchaseCancelHandler = this.purchaseCancelHandler.bind(this);
-    this.purchaseContinued = this.purchaseContinued.bind(this);
+    this.purchaseContinuedHandler = this.purchaseContinuedHandler.bind(this);
     this.state = {
-      ingredients: {
-        salad: 0,
-        bacon: 0,
-        cheese: 0,
-        meat: 0,
-      },
+      ingredients: null,
       totalPrice: 4,
       purchaseable: false,
       purchasing: false,
       loading: false,
+      error: null,
     };
+  }
+
+  componentDidMount() {
+    axios.get('ingredients.json')
+      .then(response => this.setState({ ingredients: response.data }))
+      .catch(error => this.setState({ error: true }));
   }
 
   addIngredientHandler(type) {
@@ -53,7 +55,7 @@ class BurgerBuilder extends Component {
     this.setState({ purchasing: false });
   }
 
-  purchaseContinued() {
+  purchaseContinuedHandler() {
     this.setState({ loading: true });
     const { ingredients, totalPrice: price } = this.state;
     const order = {
@@ -100,47 +102,70 @@ class BurgerBuilder extends Component {
 
   render() {
     const {
+      error,
       ingredients,
       totalPrice,
       loading,
       purchaseable,
       purchasing,
     } = this.state;
-    let orderSummary = (
-      <OrderSummary
-        ingredients={ingredients}
-        price={totalPrice}
-        purchaseCancelled={this.purchaseCancelHandler}
-        purchaseContinued={this.purchaseContinued}
-      />
-    );
-    if (loading) {
-      orderSummary = <Spinner />;
-    }
+    let orderSummary = null;
+    let modal = null;
+    let burger = error ? (
+      <p>
+        Application can&#39;t be loaded
+      </p>
+    )
+      : (
+        <div style={{ marginTop: '200px' }}>
+          <Spinner />
+        </div>
+      );
     const disabledInfo = { ...ingredients };
-    new Map(Object.entries(ingredients)).forEach((value, key) => {
-      disabledInfo[key] = !value;
-    });
-    return (
-      <Aux>
+    if (ingredients) {
+      burger = (
+        <Aux>
+          <Burger ingredients={ingredients} />
+          <BuildControls
+            disabled={disabledInfo}
+            ingredientAdded={this.addIngredientHandler}
+            ingredientRemoved={this.removeIngredientHandler}
+            ordered={this.purchaseHandler}
+            price={totalPrice}
+            purchaseable={purchaseable}
+          />
+        </Aux>
+      );
+      orderSummary = (
+        <OrderSummary
+          ingredients={ingredients}
+          price={totalPrice}
+          purchaseCancelled={this.purchaseCancelHandler}
+          purchaseContinued={this.purchaseContinuedHandler}
+        />
+      );
+      if (loading) {
+        orderSummary = <Spinner />;
+      }
+      new Map(Object.entries(ingredients)).forEach((value, key) => {
+        disabledInfo[key] = !value;
+      });
+      modal = (
         <Modal
           show={purchasing}
           modalClosed={this.purchaseCancelHandler}
         >
           {orderSummary}
         </Modal>
-        <Burger ingredients={ingredients} />
-        <BuildControls
-          disabled={disabledInfo}
-          ingredientAdded={this.addIngredientHandler}
-          ingredientRemoved={this.removeIngredientHandler}
-          ordered={this.purchaseHandler}
-          price={totalPrice}
-          purchaseable={purchaseable}
-        />
+      );
+    }
+    return (
+      <Aux>
+        {modal}
+        {burger}
       </Aux>
     );
   }
 }
 
-export default withErrorHandler(BurgerBuilder);
+export default withErrorHandler(BurgerBuilder, axios);
