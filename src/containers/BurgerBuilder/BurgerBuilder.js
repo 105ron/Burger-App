@@ -161,8 +161,8 @@ class BurgerBuilder extends Component {
     }
     return (
       <Aux>
-        {modal}
         {burger}
+        {modal}
       </Aux>
     );
   }

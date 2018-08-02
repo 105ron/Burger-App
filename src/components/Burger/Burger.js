@@ -27,11 +27,11 @@ const Burger = styled.div`
 
 function burger(props) {
   const { ingredients } = props;
-  let transformedIngredients = Object.keys(ingredients).map((igKey) => {
-    return [...Array(ingredients[igKey])].map((_, i) => (
+  let transformedIngredients = Object.keys(ingredients).map(igKey => (
+    [...Array(ingredients[igKey])].map((_, i) => (
       <BurgerIngredient key={igKey + i} type={igKey} />
-    ));
-  }).reduce((arr, el) => arr.concat(el), []);
+    ))
+  )).reduce((arr, el) => arr.concat(el), []);
   if (transformedIngredients.length === 0) {
     transformedIngredients = (
       <p>
