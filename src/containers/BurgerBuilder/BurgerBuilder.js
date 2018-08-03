@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Aux from '../../hoc/Aux/Aux';
 import axios from '../../axios-orders';
 import Burger from '../../components/Burger/Burger';
@@ -56,22 +57,31 @@ class BurgerBuilder extends Component {
   }
 
   purchaseContinuedHandler() {
-    this.setState({ loading: true });
-    const { ingredients, totalPrice: price } = this.state;
-    const order = {
-      ingredients,
-      price,
-      address: {
-        street: '145 Evergreen Tce',
-        zipcode: '12345',
-        country: 'USA',
-      },
-      email: 'test@test.com',
-      deliveryMethod: 'mostEconomical',
-    };
-    axios.post('order.json', order)
-      .then(response => this.setState({ loading: false, purchasing: false }))
-      .catch(error => this.setState({ loading: false, purchasing: false }));
+    const { history } = this.props;
+    const { ingredients } = this.state;
+    const queryString = Object.keys(ingredients).map(key => (
+      `${encodeURIComponent(key)}=${encodeURIComponent(ingredients[key])}`
+    )).join('&');
+    history.push({
+      pathname: "/checkout",
+      search: `?${queryString}`,
+    });
+    // this.setState({ loading: true });
+    // const { ingredients, totalPrice: price } = this.state;
+    // const order = {
+    //   ingredients,
+    //   price,
+    //   address: {
+    //     street: '145 Evergreen Tce',
+    //     zipcode: '12345',
+    //     country: 'USA',
+    //   },
+    //   email: 'test@test.com',
+    //   deliveryMethod: 'mostEconomical',
+    // };
+    // axios.post('order.json', order)
+    //   .then(response => this.setState({ loading: false, purchasing: false }))
+    //   .catch(error => this.setState({ loading: false, purchasing: false }));
   }
 
   purchaseHandler() {
@@ -167,5 +177,9 @@ class BurgerBuilder extends Component {
     );
   }
 }
+
+BurgerBuilder.propTypes = {
+  history: PropTypes.object.isRequired,
+};
 
 export default withErrorHandler(BurgerBuilder, axios);
