@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Route } from 'react-router-dom';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
+import ContactData from './ContactData/ContactData';
 
 class Checkout extends Component {
   constructor(props) {
@@ -8,23 +10,24 @@ class Checkout extends Component {
     this.checkoutCancelledHandler = this.checkoutCancelledHandler.bind(this);
     this.checkoutContinuedHandler = this.checkoutContinuedHandler.bind(this);
     this.state = {
-      ingredients: {
-        bacon: 0,
-        salad: 0,
-        meat: 0,
-        cheese: 0,
-      },
+      ingredients: null,
+      price: 0,
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const { location: { search } } = this.props;
     const query = new URLSearchParams(search);
     const ingredients = {};
+    let price = 0;
     query.forEach((amount, ingredient) => {
-      ingredients[ingredient] = +amount;
+      if (ingredient === "price") {
+        price = +amount;
+      } else {
+        ingredients[ingredient] = +amount;
+      }
     });
-    this.setState({ ingredients });
+    this.setState({ ingredients, price });
   }
 
   checkoutCancelledHandler() {
@@ -38,13 +41,18 @@ class Checkout extends Component {
   }
 
   render() {
-    const { ingredients } = this.state;
+    const { ingredients, price } = this.state;
+    const { match } = this.props;
     return (
       <div>
         <CheckoutSummary
           ingredients={ingredients}
           checkoutContinued={this.checkoutContinuedHandler}
           checkoutCancelled={this.checkoutCancelledHandler}
+        />
+        <Route
+          path={`${match.path}/contact-data`}
+          render={props => (<ContactData ingredients={ingredients} price={price} {...props} />)}
         />
       </div>
     );
@@ -54,6 +62,7 @@ class Checkout extends Component {
 Checkout.propTypes = {
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
 };
 
 export default Checkout;

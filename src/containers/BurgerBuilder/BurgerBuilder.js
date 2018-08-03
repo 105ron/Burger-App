@@ -7,7 +7,7 @@ import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
-import Spinner from '../../components/UI/spinner/spinner';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -58,30 +58,15 @@ class BurgerBuilder extends Component {
 
   purchaseContinuedHandler() {
     const { history } = this.props;
-    const { ingredients } = this.state;
-    const queryString = Object.keys(ingredients).map(key => (
-      `${encodeURIComponent(key)}=${encodeURIComponent(ingredients[key])}`
-    )).join('&');
+    const { ingredients, totalPrice } = this.state;
+    const queryString = [`price=${encodeURIComponent(totalPrice.toFixed(2))}`,
+      ...Object.keys(ingredients).map(key => (
+        `${encodeURIComponent(key)}=${encodeURIComponent(ingredients[key])}`))]
+      .join('&');
     history.push({
       pathname: "/checkout",
       search: `?${queryString}`,
     });
-    // this.setState({ loading: true });
-    // const { ingredients, totalPrice: price } = this.state;
-    // const order = {
-    //   ingredients,
-    //   price,
-    //   address: {
-    //     street: '145 Evergreen Tce',
-    //     zipcode: '12345',
-    //     country: 'USA',
-    //   },
-    //   email: 'test@test.com',
-    //   deliveryMethod: 'mostEconomical',
-    // };
-    // axios.post('order.json', order)
-    //   .then(response => this.setState({ loading: false, purchasing: false }))
-    //   .catch(error => this.setState({ loading: false, purchasing: false }));
   }
 
   purchaseHandler() {
