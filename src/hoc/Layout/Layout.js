@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import Aux from '../Aux/Aux';
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
 import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer';
@@ -47,8 +46,6 @@ class Layout extends Component {
   }
 }
 
-Layout.propTypes = {
-  children: PropTypes.array.isRequired,
-};
-
 export default Layout;
+
+/* eslint react/prop-types: "off" */

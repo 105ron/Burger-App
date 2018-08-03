@@ -52,7 +52,7 @@ class ContactData extends Component {
       email: 'test@test.com',
       deliveryMethod: 'mostEconomical',
     };
-    axios.post('order.json', order)
+    axios.post('orders.json', order)
       .then((response) => {
         const { history } = this.props;
         this.setState({ loading: false });
