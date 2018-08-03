@@ -19,16 +19,14 @@ function navigationItems() {
   return (
     <NavigationItems>
       <NavigationItem
-        active
-        link="#"
+        link="/"
       >
         Burger Builder
       </NavigationItem>
       <NavigationItem
-        active={false}
-        link="#"
+        link="/Orders"
       >
-        Checkout
+        Orders
       </NavigationItem>
     </NavigationItems>
   );

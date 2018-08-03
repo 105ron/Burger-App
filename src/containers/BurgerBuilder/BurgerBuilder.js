@@ -59,10 +59,10 @@ class BurgerBuilder extends Component {
   purchaseContinuedHandler() {
     const { history } = this.props;
     const { ingredients, totalPrice } = this.state;
-    const queryString = [`price=${encodeURIComponent(totalPrice.toFixed(2))}`,
-      ...Object.keys(ingredients).map(key => (
-        `${encodeURIComponent(key)}=${encodeURIComponent(ingredients[key])}`))]
-      .join('&');
+    const queryString =Object.keys(ingredients).reduce((accum, key) => (
+      `${accum}${encodeURIComponent(key)}=${encodeURIComponent(ingredients[key])}&`),
+    `price=${encodeURIComponent(totalPrice.toFixed(2))}&`)
+      .slice(0, -1);
     history.push({
       pathname: "/checkout",
       search: `?${queryString}`,

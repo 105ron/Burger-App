@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
 
 const NavigationItem = styled.li`
   margin: 10px 0;
@@ -22,13 +23,15 @@ const activeStyles = `
   color: white;
 `;
 
-const Link = styled.a`
+const Link = styled(NavLink)`
   color: #8f5cec;
   text-decoration: none;
   width: 100%;
   box-sizing: border-box;
   display: block
-  ${props => props.active && 'color: #40a4c8;'}
+  &.active {
+    color: #40a4c8;
+  }
   &:hover, &:active {
     color: #40a4c8
   }
@@ -37,20 +40,19 @@ const Link = styled.a`
     height: 100%;
     padding: 16px 10px;
     border-bottom: 4px solid transparent;
-    ${props => props.active && `${activeStyles}`}
-    &:hover, &:active {
+    &:hover, &:active, &.active {
       ${activeStyles}
     }
   }
 `;
 
 function navigationItem(props) {
-  const { active, children, link } = props;
+  const { children, link } = props;
   return (
     <NavigationItem>
       <Link
-        active={active}
-        href={link}
+        to={link}
+        exact
       >
         {children}
       </Link>
@@ -59,9 +61,10 @@ function navigationItem(props) {
 }
 
 navigationItem.propTypes = {
-  active: PropTypes.bool.isRequired,
   children: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
 };
 
 export default navigationItem;
+
+/* eslint "react/destructuring-assignment": "off" */
