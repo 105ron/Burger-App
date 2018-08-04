@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Button from '../../../components/UI/Button/Button';
 import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import Input from '../../../components/UI/Input/Input';
 
 const Contact = styled.div`
   margin: 20px auto;
@@ -18,20 +19,68 @@ const Contact = styled.div`
   }
 `;
 
-const Input = styled.input`
-  display: block;
-`;
-
 class ContactData extends Component {
   constructor(props) {
     super(props);
     this.orderHandler = this.orderHandler.bind(this);
     this.state = {
-      name: '',
-      email: '',
-      address: {
-        street: '',
-        postalCode: '',
+      orderForm: {
+        name: {
+          elementType: 'input',
+          label: 'Name',
+          elementConfig: {
+            type: 'text',
+            placeholder: 'Your Name',
+          },
+          value: '',
+        },
+        email: {
+          elementType: 'input',
+          label: 'Email',
+          elementConfig: {
+            type: 'email',
+            placeholder: 'Your Email',
+          },
+          value: '',
+        },
+        street: {
+          elementType: 'input',
+          label: 'Street',
+          elementConfig: {
+            type: 'text',
+            placeholder: 'Your Street',
+          },
+          value: '',
+        },
+        postCode: {
+          elementType: 'input',
+          label: 'Post Code',
+          elementConfig: {
+            type: 'text',
+            placeholder: 'Your Post Code',
+          },
+          value: '',
+        },
+        country: {
+          elementType: 'input',
+          label: 'Country',
+          elementConfig: {
+            type: 'text',
+            placeholder: 'Your Country',
+          },
+          value: '',
+        },
+        deliveryMethod: {
+          elementType: 'select',
+          label: 'Delivery Method',
+          elementConfig: {
+            options: [
+              { value: 'fastest', displayValue: 'Fastest' },
+              { value: 'slowest', displayValue: 'Slowest' },
+            ],
+          },
+          value: '',
+        },
       },
       loading: false,
     };
@@ -62,13 +111,32 @@ class ContactData extends Component {
   }
 
   render() {
-    const { loading } = this.state;
+    const { loading, orderForm } = this.state;
+    const formElementsArray = [];
+    Object.keys(orderForm).forEach(key => (
+      formElementsArray.push(
+        {
+          id: key,
+          config: orderForm[key],
+        },
+      )
+    ));
     let form = (
       <form>
-        <Input type="text" name="name" placeholder="Your name" />
-        <Input type="email" name="email" placeholder="Your email" />
-        <Input type="text" name="postalCode" placeholder="Your postal code" />
-        <Input type="text" name="street" placeholder="Your Street" />
+        {formElementsArray.map((formElement) => {
+          const {
+            elementType, elementConfig, label, value,
+          } = formElement.config;
+          return (
+            <Input
+              elementType={elementType}
+              elementConfig={elementConfig}
+              key={formElement.id}
+              label={label}
+              value={value}
+            />
+          );
+        })}
         <Button
           btnType="success"
           clicked={this.orderHandler}

@@ -24,7 +24,7 @@ function navigationItems() {
         Burger Builder
       </NavigationItem>
       <NavigationItem
-        link="/Orders"
+        link="/orders"
       >
         Orders
       </NavigationItem>

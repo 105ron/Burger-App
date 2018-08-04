@@ -7,7 +7,7 @@ import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
-import Spinner from '../../components/UI/Spinner/Spinner';
+import SpinnerWithMargin from '../../components/UI/Spinner/SpinnerWithMargin';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -112,9 +112,7 @@ class BurgerBuilder extends Component {
       </p>
     )
       : (
-        <div style={{ marginTop: '200px' }}>
-          <Spinner />
-        </div>
+        <SpinnerWithMargin />
       );
     const disabledInfo = { ...ingredients };
     if (ingredients) {
@@ -140,7 +138,7 @@ class BurgerBuilder extends Component {
         />
       );
       if (loading) {
-        orderSummary = <Spinner />;
+        orderSummary = <SpinnerWithMargin />;
       }
       new Map(Object.entries(ingredients)).forEach((value, key) => {
         disabledInfo[key] = !value;
