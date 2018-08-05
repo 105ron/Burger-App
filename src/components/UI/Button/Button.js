@@ -17,6 +17,10 @@ const Button = styled.button`
   padding: 10px;
   margin: 10px;
   font-weight: bold;
+  &:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+  }
   &:first-of-type {
     margin-left: 0;
     padding-left: 0;
@@ -25,11 +29,14 @@ const Button = styled.button`
 
 
 function button(props) {
-  const { children, clicked, btnType = "" } = props;
+  const {
+    children, clicked, disabled, btnType = "",
+  } = props;
   return (
     <Button
       type={btnType}
       onClick={clicked}
+      disabled={disabled}
     >
       {children}
     </Button>
@@ -44,4 +51,4 @@ button.propTypes = {
 
 export default button;
 
-/* eslint react/destructuring-assignment: "off" */
+/* eslint react/destructuring-assignment: "off", react/prop-types: "off" */
