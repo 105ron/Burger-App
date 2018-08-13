@@ -25,8 +25,8 @@ class BurgerBuilder extends Component {
     this.purchaseCancelHandler = this.purchaseCancelHandler.bind(this);
     this.purchaseContinuedHandler = this.purchaseContinuedHandler.bind(this);
     this.state = {
-      ingredients: null,
-      totalPrice: 4,
+      // ingredients: null,
+      // totalPrice: 4,
       purchaseable: false,
       purchasing: false,
       loading: false,
