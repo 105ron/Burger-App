@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
@@ -9,10 +10,6 @@ class Checkout extends Component {
     super(props);
     this.checkoutCancelledHandler = this.checkoutCancelledHandler.bind(this);
     this.checkoutContinuedHandler = this.checkoutContinuedHandler.bind(this);
-    this.state = {
-      ingredients: null,
-      price: 0,
-    };
   }
 
   componentWillMount() {
@@ -41,8 +38,7 @@ class Checkout extends Component {
   }
 
   render() {
-    const { ingredients, price } = this.state;
-    const { match } = this.props;
+    const { ings: ingredients, match } = this.props;
     return (
       <div>
         <CheckoutSummary
@@ -52,7 +48,7 @@ class Checkout extends Component {
         />
         <Route
           path={`${match.path}/contact-data`}
-          render={props => (<ContactData ingredients={ingredients} price={price} {...props} />)}
+          component={ContactData}
         />
       </div>
     );
@@ -61,8 +57,15 @@ class Checkout extends Component {
 
 Checkout.propTypes = {
   history: PropTypes.object.isRequired,
+  ings: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
 };
 
-export default Checkout;
+function mapStateToProps(state) {
+  return {
+    ings: state.ingredients,
+  };
+}
+
+export default connect(mapStateToProps)(Checkout);

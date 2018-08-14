@@ -11,24 +11,13 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import SpinnerWithMargin from '../../components/UI/Spinner/SpinnerWithMargin';
 
-const INGREDIENT_PRICES = {
-  salad: 0.5,
-  cheese: 0.4,
-  meat: 1.3,
-  bacon: 0.7,
-};
-
 class BurgerBuilder extends Component {
   constructor(props) {
     super(props);
-    this.addIngredientHandler = this.addIngredientHandler.bind(this);
-    this.removeIngredientHandler = this.removeIngredientHandler.bind(this);
     this.purchaseHandler = this.purchaseHandler.bind(this);
     this.purchaseCancelHandler = this.purchaseCancelHandler.bind(this);
     this.purchaseContinuedHandler = this.purchaseContinuedHandler.bind(this);
     this.state = {
-      totalPrice: 4,
-      purchaseable: false,
       purchasing: false,
       loading: false,
       error: null,
@@ -41,66 +30,34 @@ class BurgerBuilder extends Component {
     //   .catch(error => this.setState({ error: true }));
   }
 
-  addIngredientHandler(type) {
-    const { ingredients } = this.state;
-    const oldCount = ingredients[type];
-    const updatedCount = oldCount + 1;
-    ingredients[type] = updatedCount;
-    const priceAddition = INGREDIENT_PRICES[type];
-    const { totalPrice: oldPrice } = this.state;
-    const newPrice = oldPrice + priceAddition;
-    this.setState({ totalPrice: newPrice, ingredients });
-    this.updatePurchaseState(ingredients);
-  }
-
   purchaseCancelHandler() {
     this.setState({ purchasing: false });
   }
 
   purchaseContinuedHandler() {
     const { history } = this.props;
-    const { ingredients, totalPrice } = this.state;
-    const queryString =Object.keys(ingredients).reduce((accum, key) => (
-      `${accum}${encodeURIComponent(key)}=${encodeURIComponent(ingredients[key])}&`),
-    `price=${encodeURIComponent(totalPrice.toFixed(2))}&`)
-      .slice(0, -1);
-    history.push({
-      pathname: "/checkout",
-      search: `?${queryString}`,
-    });
+    history.push("/checkout");
   }
 
   purchaseHandler() {
     this.setState({ purchasing: true });
   }
 
-  removeIngredientHandler(type) {
-    const { ingredients } = this.state;
-    const oldCount = ingredients[type];
-    if (oldCount <= 0) {
-      return;
-    }
-    const updatedCount = oldCount - 1;
-    ingredients[type] = updatedCount;
-    const priceSubtraction = INGREDIENT_PRICES[type];
-    const { totalPrice: oldPrice } = this.state;
-    const newPrice = oldPrice - priceSubtraction;
-    this.setState({ totalPrice: newPrice, ingredients });
-    this.updatePurchaseState(ingredients);
-  }
-
-  updatePurchaseState(ingredients) {
+  updatePurchaseState() {
+    const { ings: ingredients } = this.props;
     const sum = Object.keys(ingredients)
       .map(igKey => ingredients[igKey])
       .reduce((total, el) => total + el, 0);
-    this.setState({ purchaseable: sum > 0 });
+    return sum > 0;
   }
 
   render() {
     const {
-      error, totalPrice, loading, purchaseable, purchasing,
+      error, loading, purchasing,
     } = this.state;
-    const { ings: ingredients, onIngredientAdded, onIngredientRemoved } = this.props;
+    const {
+      ings: ingredients, onIngredientAdded, onIngredientRemoved, price: totalPrice,
+    } = this.props;
     let orderSummary = null;
     let modal = null;
     let burger = error ? (
@@ -122,7 +79,7 @@ class BurgerBuilder extends Component {
             ingredientRemoved={onIngredientRemoved}
             ordered={this.purchaseHandler}
             price={totalPrice}
-            purchaseable={purchaseable}
+            purchaseable={this.updatePurchaseState()}
           />
         </Aux>
       );
@@ -163,11 +120,13 @@ BurgerBuilder.propTypes = {
   ings: PropTypes.object.isRequired,
   onIngredientAdded: PropTypes.func.isRequired,
   onIngredientRemoved: PropTypes.func.isRequired,
+  price: PropTypes.number.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
     ings: state.ingredients,
+    price: state.totalPrice,
   };
 }
 
@@ -179,3 +138,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));
+
+/* eslint class-methods-use-this: "off" */

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Button from '../../../components/UI/Button/Button';
@@ -122,7 +123,7 @@ class ContactData extends Component {
     event.preventDefault();
     this.setState({ loading: true });
     const { orderForm } = this.state;
-    const { ingredients, price } = this.props;
+    const { ings: ingredients, price } = this.props;
     const formData = {};
     Object.keys(orderForm).forEach((input) => {
       formData[input] = orderForm[input].value;
@@ -225,9 +226,16 @@ class ContactData extends Component {
 ContactData.propTypes = {
   price: PropTypes.number.isRequired,
   history: PropTypes.object.isRequired,
-  ingredients: PropTypes.object.isRequired,
+  ings: PropTypes.object.isRequired,
 };
 
-export default ContactData;
+function mapStateToProps(state) {
+  return {
+    ings: state.ingredients,
+    price: state.totalPrice,
+  };
+}
+
+export default connect(mapStateToProps)(ContactData);
 
 /* eslint class-methods-use-this: 'off' */
