@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import * as actionTypes from '../../store/actions';
 import Aux from '../../hoc/Aux/Aux';
 import axios from '../../axios-orders';
 import Burger from '../../components/Burger/Burger';
@@ -25,8 +27,7 @@ class BurgerBuilder extends Component {
     this.purchaseCancelHandler = this.purchaseCancelHandler.bind(this);
     this.purchaseContinuedHandler = this.purchaseContinuedHandler.bind(this);
     this.state = {
-      // ingredients: null,
-      // totalPrice: 4,
+      totalPrice: 4,
       purchaseable: false,
       purchasing: false,
       loading: false,
@@ -35,9 +36,9 @@ class BurgerBuilder extends Component {
   }
 
   componentDidMount() {
-    axios.get('ingredients.json')
-      .then(response => this.setState({ ingredients: response.data }))
-      .catch(error => this.setState({ error: true }));
+    // axios.get('ingredients.json')
+    //   .then(response => this.setState({ ingredients: response.data }))
+    //   .catch(error => this.setState({ error: true }));
   }
 
   addIngredientHandler(type) {
@@ -97,13 +98,9 @@ class BurgerBuilder extends Component {
 
   render() {
     const {
-      error,
-      ingredients,
-      totalPrice,
-      loading,
-      purchaseable,
-      purchasing,
+      error, totalPrice, loading, purchaseable, purchasing,
     } = this.state;
+    const { ings: ingredients, onIngredientAdded, onIngredientRemoved } = this.props;
     let orderSummary = null;
     let modal = null;
     let burger = error ? (
@@ -121,8 +118,8 @@ class BurgerBuilder extends Component {
           <Burger ingredients={ingredients} />
           <BuildControls
             disabled={disabledInfo}
-            ingredientAdded={this.addIngredientHandler}
-            ingredientRemoved={this.removeIngredientHandler}
+            ingredientAdded={onIngredientAdded}
+            ingredientRemoved={onIngredientRemoved}
             ordered={this.purchaseHandler}
             price={totalPrice}
             purchaseable={purchaseable}
@@ -163,6 +160,22 @@ class BurgerBuilder extends Component {
 
 BurgerBuilder.propTypes = {
   history: PropTypes.object.isRequired,
+  ings: PropTypes.object.isRequired,
+  onIngredientAdded: PropTypes.func.isRequired,
+  onIngredientRemoved: PropTypes.func.isRequired,
 };
 
-export default withErrorHandler(BurgerBuilder, axios);
+function mapStateToProps(state) {
+  return {
+    ings: state.ingredients,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onIngredientAdded: ingredientName => dispatch({ type: actionTypes.ADD_INGREDIENT, ingredientName }),
+    onIngredientRemoved: ingredientName => dispatch({ type: actionTypes.REMOVE_INGREDIENT, ingredientName }),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));
