@@ -4,12 +4,12 @@ import { injectGlobal } from 'styled-components';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import reducer from './store/reducer';
+import burgerBuilderReducer from './store/reducers/burgerBuilder';
 import App from './App';
 import globalCSS from './globalStyle/globalCss';
 import registerServiceWorker from './registerServiceWorker';
 
-const store = createStore(reducer);
+const store = createStore(burgerBuilderReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 injectGlobal`${globalCSS}`;
 
@@ -24,4 +24,4 @@ const app = (
 ReactDOM.render(app, document.getElementById('root'));
 registerServiceWorker();
 
-/* eslint no-undef: "off", no-unused-expressions: "off" */
+/* eslint no-undef: "off", no-unused-expressions: "off", no-underscore-dangle: "off" */
