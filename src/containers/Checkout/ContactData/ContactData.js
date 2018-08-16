@@ -6,6 +6,8 @@ import Button from '../../../components/UI/Button/Button';
 import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
+import * as actions from '../../../store/actions/index';
 
 const Contact = styled.div`
   margin: 20px auto;
@@ -115,15 +117,13 @@ class ContactData extends Component {
         },
       },
       formIsValid: false,
-      loading: false,
     };
   }
 
   orderHandler(event) {
     event.preventDefault();
-    this.setState({ loading: true });
     const { orderForm } = this.state;
-    const { ings: ingredients, price } = this.props;
+    const { ings: ingredients, onOrderBurger, price } = this.props;
     const formData = {};
     Object.keys(orderForm).forEach((input) => {
       formData[input] = orderForm[input].value;
@@ -133,13 +133,7 @@ class ContactData extends Component {
       price,
       orderData: formData,
     };
-    axios.post('orders.json', order)
-      .then((response) => {
-        const { history } = this.props;
-        this.setState({ loading: false });
-        history.push('/');
-      })
-      .catch(error => this.setState({ loading: false }));
+    onOrderBurger(order);
   }
 
   checkValidity(value, rules) {
@@ -172,7 +166,8 @@ class ContactData extends Component {
   }
 
   render() {
-    const { loading, orderForm, formIsValid } = this.state;
+    const { orderForm, formIsValid } = this.state;
+    const { loading } = this.props;
     const formElementsArray = [];
     Object.keys(orderForm).forEach(key => (
       formElementsArray.push(
@@ -224,18 +219,26 @@ class ContactData extends Component {
 }
 
 ContactData.propTypes = {
-  price: PropTypes.number.isRequired,
-  history: PropTypes.object.isRequired,
   ings: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
+  price: PropTypes.number.isRequired,
+  onOrderBurger: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
-    ings: state.ingredients,
-    price: state.totalPrice,
+    ings: state.burgerBuilder.ingredients,
+    price: state.burgerBuilder.totalPrice,
+    loading: state.order.loading,
   };
 }
 
-export default connect(mapStateToProps)(ContactData);
+function mapDispatchToProps(dispatch) {
+  return {
+    onOrderBurger: orderData => dispatch(actions.purchaseBurger(orderData)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData, axios));
 
 /* eslint class-methods-use-this: 'off' */

@@ -64,7 +64,7 @@ class BurgerBuilder extends Component {
         <SpinnerWithMargin />
       );
     const disabledInfo = { ...ingredients };
-    if (ingredients.hasOwnProperty('salad')) {
+    if (ingredients.salad >= 0) {
       burger = (
         <Aux>
           <Burger ingredients={ingredients} />
@@ -122,9 +122,9 @@ BurgerBuilder.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    ings: state.ingredients,
-    price: state.totalPrice,
-    error: state.error,
+    ings: state.burgerBuilder.ingredients,
+    price: state.burgerBuilder.totalPrice,
+    error: state.burgerBuilder.error,
   };
 }
 

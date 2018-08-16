@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
 
@@ -14,17 +14,17 @@ class Checkout extends Component {
 
   componentWillMount() {
     const { location: { search } } = this.props;
-    const query = new URLSearchParams(search);
-    const ingredients = {};
-    let price = 0;
-    query.forEach((amount, ingredient) => {
-      if (ingredient === "price") {
-        price = +amount;
-      } else {
-        ingredients[ingredient] = +amount;
-      }
-    });
-    this.setState({ ingredients, price });
+    // const query = new URLSearchParams(search);
+    // const ingredients = {};
+    // let price = 0;
+    // query.forEach((amount, ingredient) => {
+    //   if (ingredient === "price") {
+    //     price = +amount;
+    //   } else {
+    //     ingredients[ingredient] = +amount;
+    //   }
+    // });
+    // this.setState({ ingredients, price });
   }
 
   checkoutCancelledHandler() {
@@ -39,19 +39,23 @@ class Checkout extends Component {
 
   render() {
     const { ings: ingredients, match } = this.props;
-    return (
-      <div>
-        <CheckoutSummary
-          ingredients={ingredients}
-          checkoutContinued={this.checkoutContinuedHandler}
-          checkoutCancelled={this.checkoutCancelledHandler}
-        />
-        <Route
-          path={`${match.path}/contact-data`}
-          component={ContactData}
-        />
-      </div>
-    );
+    let summary = <Redirect to="/" />;
+    if (ingredients.salad >= 0) {
+      summary = (
+        <div>
+          <CheckoutSummary
+            ingredients={ingredients}
+            checkoutContinued={this.checkoutContinuedHandler}
+            checkoutCancelled={this.checkoutCancelledHandler}
+          />
+          <Route
+            path={`${match.path}/contact-data`}
+            component={ContactData}
+          />
+        </div>
+      );
+    }
+    return summary;
   }
 }
 
@@ -64,7 +68,7 @@ Checkout.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    ings: state.ingredients,
+    ings: state.burgerBuilder.ingredients,
   };
 }
 
