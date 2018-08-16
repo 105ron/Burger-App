@@ -19,15 +19,12 @@ class BurgerBuilder extends Component {
     this.purchaseContinuedHandler = this.purchaseContinuedHandler.bind(this);
     this.state = {
       purchasing: false,
-      loading: false,
-      error: null,
     };
   }
 
   componentDidMount() {
-    // axios.get('ingredients.json')
-    //   .then(response => this.setState({ ingredients: response.data }))
-    //   .catch(error => this.setState({ error: true }));
+    const { onInitIngredients } = this.props;
+    onInitIngredients();
   }
 
   purchaseCancelHandler() {
@@ -52,11 +49,9 @@ class BurgerBuilder extends Component {
   }
 
   render() {
+    const { purchasing } = this.state;
     const {
-      error, loading, purchasing,
-    } = this.state;
-    const {
-      ings: ingredients, onIngredientAdded, onIngredientRemoved, price: totalPrice,
+      error, ings: ingredients, onIngredientAdded, onIngredientRemoved, price: totalPrice,
     } = this.props;
     let orderSummary = null;
     let modal = null;
@@ -69,7 +64,7 @@ class BurgerBuilder extends Component {
         <SpinnerWithMargin />
       );
     const disabledInfo = { ...ingredients };
-    if (ingredients) {
+    if (ingredients.hasOwnProperty('salad')) {
       burger = (
         <Aux>
           <Burger ingredients={ingredients} />
@@ -91,9 +86,9 @@ class BurgerBuilder extends Component {
           purchaseContinued={this.purchaseContinuedHandler}
         />
       );
-      if (loading) {
-        orderSummary = <SpinnerWithMargin />;
-      }
+      // if (loading) {
+      //   orderSummary = <SpinnerWithMargin />;
+      // }
       new Map(Object.entries(ingredients)).forEach((value, key) => {
         disabledInfo[key] = !value;
       });
@@ -116,10 +111,12 @@ class BurgerBuilder extends Component {
 }
 
 BurgerBuilder.propTypes = {
+  error: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
   ings: PropTypes.object.isRequired,
   onIngredientAdded: PropTypes.func.isRequired,
   onIngredientRemoved: PropTypes.func.isRequired,
+  onInitIngredients: PropTypes.func.isRequired,
   price: PropTypes.number.isRequired,
 };
 
@@ -127,6 +124,7 @@ function mapStateToProps(state) {
   return {
     ings: state.ingredients,
     price: state.totalPrice,
+    error: state.error,
   };
 }
 
@@ -134,6 +132,7 @@ function mapDispatchToProps(dispatch) {
   return {
     onIngredientAdded: ingredientName => dispatch(burgerBuilderActions.addIngredient(ingredientName)),
     onIngredientRemoved: ingredientName => dispatch(burgerBuilderActions.removeIngredient(ingredientName)),
+    onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients()),
   };
 }
 
