@@ -1,38 +1,20 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import Order from '../../components/Order/Order';
 import SpinnerWithMargin from '../../components/UI/Spinner/SpinnerWithMargin';
 import axios from '../../axios-orders';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import * as actions from '../../store/actions/index';
 
 class Orders extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      orders: [],
-      loading: true,
-    };
-  }
-
   componentDidMount() {
-    axios.get('orders.json')
-      .then((response) => {
-        const { data } = response;
-        const fetchedOrders = [];
-        Object.keys(data).forEach((key) => {
-          fetchedOrders.push({
-            ...data[key],
-            id: key,
-          });
-        });
-        this.setState({ loading: false, orders: fetchedOrders });
-      })
-      .catch((error) => {
-        this.setState({ loading: false });
-      });
+    const { onFetchOrders } = this.props;
+    onFetchOrders();
   }
 
   render() {
-    const { loading, orders } = this.state;
+    const { loading, orders } = this.props;
     let orderDisplay = <SpinnerWithMargin />;
     if (!loading) {
       orderDisplay = (
@@ -54,4 +36,23 @@ class Orders extends Component {
   }
 }
 
-export default withErrorHandler(Orders, axios);
+Orders.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  orders: PropTypes.array.isRequired,
+  onFetchOrders: PropTypes.func.isRequired,
+};
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onFetchOrders: () => dispatch(actions.fetchOrders()),
+  };
+}
+
+function mapStateToProps(state) {
+  return {
+    orders: state.orders.orders,
+    loading: state.orders.loading,
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Orders, axios));

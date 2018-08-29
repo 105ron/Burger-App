@@ -197,7 +197,7 @@ class ContactData extends Component {
         })}
         <Button
           btnType="success"
-          clicked={() => {}}
+          clicked={() => {} /* For Props validation */}
           disabled={!formIsValid}
         >
           Order
@@ -229,7 +229,7 @@ function mapStateToProps(state) {
   return {
     ings: state.burgerBuilder.ingredients,
     price: state.burgerBuilder.totalPrice,
-    loading: state.order.loading,
+    loading: state.orders.loading,
   };
 }
 

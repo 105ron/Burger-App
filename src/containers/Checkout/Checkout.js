@@ -12,21 +12,6 @@ class Checkout extends Component {
     this.checkoutContinuedHandler = this.checkoutContinuedHandler.bind(this);
   }
 
-  componentWillMount() {
-    const { location: { search } } = this.props;
-    // const query = new URLSearchParams(search);
-    // const ingredients = {};
-    // let price = 0;
-    // query.forEach((amount, ingredient) => {
-    //   if (ingredient === "price") {
-    //     price = +amount;
-    //   } else {
-    //     ingredients[ingredient] = +amount;
-    //   }
-    // });
-    // this.setState({ ingredients, price });
-  }
-
   checkoutCancelledHandler() {
     const { history } = this.props;
     history.goBack();
@@ -38,11 +23,13 @@ class Checkout extends Component {
   }
 
   render() {
-    const { ings: ingredients, match } = this.props;
-    let summary = <Redirect to="/" />;
+    const { ings: ingredients, match, purchased } = this.props;
+    let summary = null;
     if (ingredients.salad >= 0) {
+      const purchasedRedirect = purchased ? <Redirect to="/" /> : null;
       summary = (
         <div>
+          {purchasedRedirect}
           <CheckoutSummary
             ingredients={ingredients}
             checkoutContinued={this.checkoutContinuedHandler}
@@ -62,13 +49,14 @@ class Checkout extends Component {
 Checkout.propTypes = {
   history: PropTypes.object.isRequired,
   ings: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
+  purchased: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
     ings: state.burgerBuilder.ingredients,
+    purchased: state.orders.purchased,
   };
 }
 
