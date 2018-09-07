@@ -3,16 +3,15 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const Input = styled.div`
-  width:100%;
+  width: 100%;
   padding: 10px;
   text-align: left;
   box-sizing: border-box;
 `;
 
 const Label = styled.label`
-  font-weight: bold;
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 3px;
 `;
 const InputElement = styled.input`
   outline: none;

@@ -28,6 +28,11 @@ function navigationItems() {
       >
         Orders
       </NavigationItem>
+      <NavigationItem
+        link="/auth"
+      >
+        Authenticate
+      </NavigationItem>
     </NavigationItems>
   );
 }

@@ -7,6 +7,7 @@ import Backdrop from '../Backdrop/Backdrop';
 const ModalWrapper = styled.div`
   position: fixed;
   z-index: 500;
+  text-align: center;
   background-color: white;
   width: 70%;
   border: 1px solid #ccc;
