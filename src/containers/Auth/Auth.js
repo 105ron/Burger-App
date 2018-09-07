@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import Aux from '../../hoc/Aux/Aux';
+import SpinnerWithMargin from '../../components/UI/Spinner/SpinnerWithMargin';
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 import * as actions from '../../store/actions/index';
@@ -19,11 +21,19 @@ const AuthWrapper = styled.div`
   }
 `;
 
+const ErrorTag = styled.p`
+  margin: 0
+  color: red;
+  text-transform: lowercase;
+  text-align: center
+`;
+
 class Auth extends Component {
   constructor(props) {
     super(props);
     this.inputChangedHandler = this.inputChangedHandler.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
+    this.switchAuthModeHandler = this.switchAuthModeHandler.bind(this);
     this.state = {
       controls: {
         email: {
@@ -31,7 +41,7 @@ class Auth extends Component {
           label: 'Email',
           elementConfig: {
             type: 'email',
-            placeholder: 'Mail Address',
+            placeholder: 'Email address',
           },
           value: '',
           validation: {
@@ -58,6 +68,7 @@ class Auth extends Component {
         },
       },
       formIsValid: false,
+      isSignUp: true,
     };
   }
 
@@ -102,18 +113,27 @@ class Auth extends Component {
     event.preventDefault();
     const { onAuth } = this.props;
     const {
+      isSignUp,
       controls:
         {
           email: { value: emailValue },
           password: { value: passwordValue },
         },
     } = this.state;
-    console.log({ emailValue, passwordValue });
-    onAuth(emailValue, passwordValue);
+    onAuth(emailValue, passwordValue, isSignUp);
+  }
+
+  switchAuthModeHandler(event) {
+    event.preventDefault();
+    this.setState((prevState) => {
+      return { isSignUp: !prevState.isSignUp };
+    });
   }
 
   render() {
-    const { controls, formIsValid } = this.state;
+    const { controls, formIsValid, isSignUp } = this.state;
+    const { loading, error } = this.props;
+    const buttonLabel = `${isSignUp ? 'Signin' : 'Signup'} Instead`;
     const formElementsArray = [];
     Object.keys(controls).forEach(key => (
       formElementsArray.push(
@@ -123,6 +143,14 @@ class Auth extends Component {
         },
       )
     ));
+    let errorMessage = null;
+    if (error) {
+      errorMessage = (
+        <ErrorTag>
+          {error}
+        </ErrorTag>
+      );
+    }
     const form = (
       formElementsArray.map((formElement) => {
         const {
@@ -141,33 +169,56 @@ class Auth extends Component {
         );
       })
     );
-    return (
+    let renderComponent = (
       <AuthWrapper>
         <form onSubmit={this.submitHandler}>
           {form}
+          {errorMessage}
           <Button
             btnType="success"
             clicked={() => {} /* For Props validation */}
-            disabled={false} /* fix later */
+            disabled={!formIsValid}
           >
             Submit
           </Button>
+          <Button
+            btnType="danger"
+            clicked={this.switchAuthModeHandler}
+            disabled={false}
+          >
+            {buttonLabel}
+          </Button>
         </form>
       </AuthWrapper>
+    );
+    if (loading) renderComponent = <SpinnerWithMargin />;
+    return (
+      <Aux>
+        {renderComponent}
+      </Aux>
     );
   }
 }
 
 Auth.propTypes = {
+  error: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
   onAuth: PropTypes.func.isRequired,
 };
 
-function mapDispatchToProps(dispatch) {
+function mapStateToProps(state) {
   return {
-    onAuth: (email, password) => dispatch(actions.auth(email, password)),
+    loading: state.auth.loading,
+    error: state.auth.error,
   };
 }
 
-export default connect(null, mapDispatchToProps)(Auth);
+function mapDispatchToProps(dispatch) {
+  return {
+    onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp)),
+  };
+}
 
-/* eslint class-methods-use-this: 'off', max-len: "off" */
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);
+
+/* eslint class-methods-use-this: 'off', max-len: "off", arrow-body-style: "off" */
