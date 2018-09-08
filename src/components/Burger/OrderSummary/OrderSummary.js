@@ -1,7 +1,16 @@
 import React from "react";
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import Aux from '../../../hoc/Aux/Aux';
 import Button from '../../UI/Button/Button';
+
+const Ingredient = styled.li`
+  list-style: none;
+`;
+
+const IngredientName = styled.span`
+  text-transform: capitalize;
+`;
 
 function orderSummary(props) {
   const {
@@ -13,13 +22,13 @@ function orderSummary(props) {
   const ingredientSummary = Object.keys(ingredients)
     .map(igKey => (
       ingredients[igKey] ? (
-        <li key={igKey}>
-          <span style={{ textTransform: 'capitalize' }}>
+        <Ingredient key={igKey}>
+          <IngredientName>
             {igKey}
-          </span>
+          </IngredientName>
           &#58;&nbsp;
           {ingredients[igKey]}
-        </li>
+        </Ingredient>
       ) : null
     ));
 

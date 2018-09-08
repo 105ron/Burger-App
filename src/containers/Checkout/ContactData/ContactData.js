@@ -126,7 +126,7 @@ class ContactData extends Component {
     event.preventDefault();
     const { orderForm } = this.state;
     const {
-      ings: ingredients, onOrderBurger, price, token,
+      ings: ingredients, onOrderBurger, price, token, userId,
     } = this.props;
     const formData = {};
     Object.keys(orderForm).forEach((input) => {
@@ -135,6 +135,7 @@ class ContactData extends Component {
     const order = {
       ingredients,
       price,
+      userId,
       orderData: formData,
     };
     onOrderBurger(order, token);
@@ -240,6 +241,7 @@ ContactData.propTypes = {
   price: PropTypes.number.isRequired,
   onOrderBurger: PropTypes.func.isRequired,
   token: PropTypes.string,
+  userId: PropTypes.string.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -248,6 +250,7 @@ function mapStateToProps(state) {
     price: state.burgerBuilder.totalPrice,
     loading: state.orders.loading,
     token: state.auth.token,
+    userId: state.auth.userId,
   };
 }
 
