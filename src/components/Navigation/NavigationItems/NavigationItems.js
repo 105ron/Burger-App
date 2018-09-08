@@ -1,5 +1,7 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import Aux from '../../../hoc/Aux/Aux';
 import NavigationItem from './NavigationItem/NavigationItem';
 
 const NavigationItems = styled.ul`
@@ -15,7 +17,22 @@ const NavigationItems = styled.ul`
   }
 `;
 
-function navigationItems() {
+function navigationItems(props) {
+  const { isAuth } = props;
+  const protectedLinks = (
+    <Aux>
+      <NavigationItem
+        link="/orders"
+      >
+        Orders
+      </NavigationItem>
+      <NavigationItem
+        link="/logout"
+      >
+        Logout
+      </NavigationItem>
+    </Aux>
+  );
   return (
     <NavigationItems>
       <NavigationItem
@@ -23,18 +40,21 @@ function navigationItems() {
       >
         Burger Builder
       </NavigationItem>
-      <NavigationItem
-        link="/orders"
-      >
-        Orders
-      </NavigationItem>
-      <NavigationItem
-        link="/auth"
-      >
-        Authenticate
-      </NavigationItem>
+      {isAuth ? (
+        protectedLinks
+      ) : (
+        <NavigationItem
+          link="/auth"
+        >
+          Sign up
+        </NavigationItem>
+      )}
     </NavigationItems>
   );
 }
+
+navigationItems.propTypes = {
+  isAuth: PropTypes.bool.isRequired,
+};
 
 export default navigationItems;

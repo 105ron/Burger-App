@@ -28,13 +28,13 @@ const Nav = styled.nav`
 `;
 
 function toolbar(props) {
-  const { drawerToggleClicked } = props;
+  const { drawerToggleClicked, isAuth } = props;
   return (
     <Toolbar>
       <DrawerToggle clicked={drawerToggleClicked} />
       <Logo height="80%" />
       <Nav>
-        <NavigationItems />
+        <NavigationItems isAuth={isAuth} />
       </Nav>
     </Toolbar>
   );
@@ -42,6 +42,7 @@ function toolbar(props) {
 
 toolbar.propTypes = {
   drawerToggleClicked: PropTypes.func.isRequired,
+  isAuth: PropTypes.bool.isRequired,
 };
 
 export default toolbar;

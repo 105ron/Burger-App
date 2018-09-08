@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Aux from '../Aux/Aux';
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
@@ -29,12 +31,16 @@ class Layout extends Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, isAuthenticated } = this.props;
     const { showSideDrawer } = this.state;
     return (
       <Aux>
-        <Toolbar drawerToggleClicked={this.sideDrawerToggleHandler} />
+        <Toolbar
+          isAuth={isAuthenticated}
+          drawerToggleClicked={this.sideDrawerToggleHandler}
+        />
         <SideDrawer
+          isAuth={isAuthenticated}
           open={showSideDrawer}
           closed={this.sideDrawerClosedHandler}
         />
@@ -46,6 +52,16 @@ class Layout extends Component {
   }
 }
 
-export default Layout;
+Layout.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired,
+};
+
+function mapStateToProps(state) {
+  return {
+    isAuthenticated: state.auth.token !== null,
+  };
+}
+
+export default connect(mapStateToProps)(Layout);
 
 /* eslint react/prop-types: "off" */

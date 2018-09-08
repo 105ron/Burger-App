@@ -29,14 +29,14 @@ const NavBar = styled.nav`
 `;
 
 function sideDrawer(props) {
-  const { closed, open } = props;
+  const { isAuth, closed, open } = props;
   return (
     <Aux>
       <Backdrop show={open} click={closed} />
       <SideDrawer show={open} style={open ? null : { transform: 'translateX(-100%)' }}>
         <Logo height="11%" />
         <NavBar>
-          <NavigationItems />
+          <NavigationItems isAuth={isAuth} />
         </NavBar>
       </SideDrawer>
     </Aux>
@@ -46,6 +46,7 @@ function sideDrawer(props) {
 sideDrawer.propTypes = {
   closed: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
+  isAuth: PropTypes.bool.isRequired,
 };
 
 export default sideDrawer;

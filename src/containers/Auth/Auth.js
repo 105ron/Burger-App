@@ -133,7 +133,8 @@ class Auth extends Component {
   render() {
     const { controls, formIsValid, isSignUp } = this.state;
     const { loading, error } = this.props;
-    const buttonLabel = `${isSignUp ? 'Signin' : 'Signup'} Instead`;
+    const switchAuthButtonLabel = `${isSignUp ? 'Sign in' : 'Sign up'} Instead`;
+    const submitButtonLabel = isSignUp ? 'Sign up' : 'Sign in';
     const formElementsArray = [];
     Object.keys(controls).forEach(key => (
       formElementsArray.push(
@@ -179,14 +180,14 @@ class Auth extends Component {
             clicked={() => {} /* For Props validation */}
             disabled={!formIsValid}
           >
-            Submit
+            {submitButtonLabel}
           </Button>
           <Button
             btnType="danger"
             clicked={this.switchAuthModeHandler}
             disabled={false}
           >
-            {buttonLabel}
+            {switchAuthButtonLabel}
           </Button>
         </form>
       </AuthWrapper>

@@ -9,8 +9,8 @@ import * as actions from '../../store/actions/index';
 
 class Orders extends Component {
   componentDidMount() {
-    const { onFetchOrders } = this.props;
-    onFetchOrders();
+    const { onFetchOrders, token } = this.props;
+    onFetchOrders(token);
   }
 
   render() {
@@ -36,15 +36,20 @@ class Orders extends Component {
   }
 }
 
+Orders.defaultProps = {
+  token: null,
+};
+
 Orders.propTypes = {
   loading: PropTypes.bool.isRequired,
   orders: PropTypes.array.isRequired,
   onFetchOrders: PropTypes.func.isRequired,
+  token: PropTypes.string,
 };
 
 function mapDispatchToProps(dispatch) {
   return {
-    onFetchOrders: () => dispatch(actions.fetchOrders()),
+    onFetchOrders: token => dispatch(actions.fetchOrders(token)),
   };
 }
 
@@ -52,6 +57,7 @@ function mapStateToProps(state) {
   return {
     orders: state.orders.orders,
     loading: state.orders.loading,
+    token: state.auth.token,
   };
 }
 
