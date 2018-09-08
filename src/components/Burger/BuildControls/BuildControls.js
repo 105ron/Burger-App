@@ -20,6 +20,7 @@ const enable = keyframes`
 `;
 
 const BuildButton = styled.button`
+  margin-top: 10px;
   background-color: #DAD735;
   outline: none;
   cursor: pointer;
@@ -54,12 +55,7 @@ const controls = [
 
 function buildControls(props) {
   const {
-    ingredientAdded,
-    ingredientRemoved,
-    disabled,
-    price,
-    purchaseable,
-    ordered,
+    ingredientAdded, ingredientRemoved, isAuth, disabled, price, purchaseable, ordered,
   } = props;
   return (
     <BuildControls>
@@ -83,7 +79,7 @@ function buildControls(props) {
         disabled={!purchaseable}
         onClick={ordered}
       >
-        Order Now
+        {isAuth ? 'Order Now' : 'Sign up to order'}
       </BuildButton>
     </BuildControls>
   );
@@ -92,6 +88,7 @@ function buildControls(props) {
 buildControls.propTypes = {
   ingredientAdded: PropTypes.func.isRequired,
   ingredientRemoved: PropTypes.func.isRequired,
+  isAuth: PropTypes.bool.isRequired,
   disabled: PropTypes.object.isRequired,
   price: PropTypes.number.isRequired,
   purchaseable: PropTypes.bool.isRequired,

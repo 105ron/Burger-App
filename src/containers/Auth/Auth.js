@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Aux from '../../hoc/Aux/Aux';
@@ -72,6 +73,13 @@ class Auth extends Component {
     };
   }
 
+  componentDidMount() {
+    const { buildingBurger, authRedirectPath, onSetAuthRedirectPath } = this.props;
+    if (!buildingBurger && authRedirectPath !== '/') {
+      onSetAuthRedirectPath()
+    }
+  }
+
   checkValidity(value, rules) {
     let isValid = true;
     if (rules.required) {
@@ -132,9 +140,9 @@ class Auth extends Component {
 
   render() {
     const { controls, formIsValid, isSignUp } = this.state;
-    const { loading, error } = this.props;
-    const switchAuthButtonLabel = `${isSignUp ? 'Sign in' : 'Sign up'} Instead`;
-    const submitButtonLabel = isSignUp ? 'Sign up' : 'Sign in';
+    const {
+      authRedirectPath, isAuthenticated, loading, error,
+    } = this.props;
     const formElementsArray = [];
     Object.keys(controls).forEach(key => (
       formElementsArray.push(
@@ -152,6 +160,12 @@ class Auth extends Component {
         </ErrorTag>
       );
     }
+    let authRedirect = null;
+    if (isAuthenticated) {
+      authRedirect = <Redirect to={authRedirectPath} />;
+    }
+    const switchAuthButtonLabel = `${isSignUp ? 'Sign in' : 'Sign up'} Instead`;
+    const submitButtonLabel = isSignUp ? 'Sign up' : 'Sign in';
     const form = (
       formElementsArray.map((formElement) => {
         const {
@@ -195,6 +209,7 @@ class Auth extends Component {
     if (loading) renderComponent = <SpinnerWithMargin />;
     return (
       <Aux>
+        {authRedirect}
         {renderComponent}
       </Aux>
     );
@@ -202,13 +217,20 @@ class Auth extends Component {
 }
 
 Auth.propTypes = {
+  authRedirectPath: PropTypes.string.isRequired,
+  buildingBurger: PropTypes.bool.isRequired,
   error: PropTypes.string.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   onAuth: PropTypes.func.isRequired,
+  onSetAuthRedirectPath: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
+    authRedirectPath: state.auth.authRedirectPath,
+    buildingBurger: state.burgerBuilder.building,
+    isAuthenticated: state.auth.token !== null,
     loading: state.auth.loading,
     error: state.auth.error,
   };
@@ -217,6 +239,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp)),
+    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/')),
   };
 }
 

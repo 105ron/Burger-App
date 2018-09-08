@@ -16,6 +16,8 @@ const ModalWrapper = styled.div`
   left: 15%;
   top: 30%;
   box-sizing: border-box;
+  transform: ${props => props.show ? 'translateY(0)' : 'translateY(-120vh)'};
+  opacity: ${props => props.show ? '1' : '0'};
   transition: all 0.3s ease-out;
   @media (min-width: 600px) {
     width: 500px;
@@ -37,12 +39,7 @@ class Modal extends Component {
           show={show}
           click={modalClosed}
         />
-        <ModalWrapper
-          style={{
-            tranform: show ? 'translateY(0)' : 'translateY(-100vh)',
-            opacity: show? '1' : '0',
-          }}
-        >
+        <ModalWrapper show={show}>
           {children}
         </ModalWrapper>
       </Aux>
@@ -57,3 +54,5 @@ Modal.propTypes = {
 };
 
 export default Modal;
+
+/* eslint no-confusing-arrow: "off", react/destructuring-assignment: "off" */
