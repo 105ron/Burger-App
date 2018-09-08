@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Route, Switch, withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import * as actions from './store/actions/index';
 import Layout from './hoc/Layout/Layout';
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
 import Logout from './containers/Auth/Logout/Logout';
@@ -8,6 +11,11 @@ import Orders from './containers/Orders/Orders';
 import Auth from './containers/Auth/Auth';
 
 class App extends Component {
+  componentDidMount() {
+    const { onTryAutoSignUp } = this.props;
+    onTryAutoSignUp();
+  }
+
   render() {
     return (
       <Layout>
@@ -23,6 +31,16 @@ class App extends Component {
   }
 }
 
-export default App;
+App.propTypes = {
+  onTryAutoSignUp: PropTypes.func.isRequired,
+};
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onTryAutoSignUp: () => dispatch(actions.authCheckState()),
+  };
+}
+
+export default withRouter(connect(null, mapDispatchToProps)(App));
 
 /* eslint react/prefer-stateless-function: "off" */
