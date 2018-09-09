@@ -18,6 +18,7 @@ const SideDrawer = styled.div`
   padding: 32px 16px;
   box-sizing: border-box;
   transform: ${props => props.show ? 'translateX(0);' : 'translateX(-100%);'}
+  ${props => props.open ? 'transform: translateX(-100%);' : null}
   transition: transform 0.3s ease-out;
   @media (min-width: 500px) {
     display: none;
@@ -33,7 +34,10 @@ function sideDrawer(props) {
   return (
     <Aux>
       <Backdrop show={open} click={closed} />
-      <SideDrawer show={open} style={open ? null : { transform: 'translateX(-100%)' }}>
+      <SideDrawer
+        show={open}
+        onClick={closed}
+      >
         <Logo height="11%" />
         <NavBar>
           <NavigationItems isAuth={isAuth} />

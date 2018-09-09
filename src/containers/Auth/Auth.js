@@ -228,7 +228,7 @@ Auth.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    authRedirectPath: state.auth.authRedirectPath,
+    authRedirectPath: state.auth.authRedirect,
     buildingBurger: state.burgerBuilder.building,
     isAuthenticated: state.auth.token !== null,
     loading: state.auth.loading,
