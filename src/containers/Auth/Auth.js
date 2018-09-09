@@ -8,6 +8,7 @@ import SpinnerWithMargin from '../../components/UI/Spinner/SpinnerWithMargin';
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 import * as actions from '../../store/actions/index';
+import { updateObject, checkValidity } from '../../shared/utility';
 
 const AuthWrapper = styled.div`
   margin: 20px auto;
@@ -80,36 +81,16 @@ class Auth extends Component {
     }
   }
 
-  checkValidity(value, rules) {
-    let isValid = true;
-    if (rules.required) {
-      isValid = value.trim() !== '' && isValid;
-    }
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid;
-    }
-    if (rules.maxLength) {
-      isValid = value.length <= rules.maxLength && isValid;
-    }
-    if (rules.isEmail) {
-      const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-      isValid = pattern.test(value) && isValid;
-    }
-    if (rules.isNumeric) {
-      const pattern = /^\d+$/;
-      isValid = pattern.test(value) && isValid;
-    }
-    return isValid;
-  }
-
   inputChangedHandler(event, inputIdentifier) {
     const { controls } = this.state;
-    const updatedControls = { ...controls };
-    const updatedControlElement = { ...updatedControls[inputIdentifier] };
-    updatedControlElement.value = event.target.value;
-    updatedControlElement.valid = this.checkValidity(updatedControlElement.value, updatedControlElement.validation);
-    updatedControlElement.touched = true;
-    updatedControls[inputIdentifier] = updatedControlElement;
+    const { target: { value: inputValue } } = event;
+    const updatedControls = updateObject(controls, {
+      [inputIdentifier]: updateObject(controls[inputIdentifier], {
+        value: inputValue,
+        valid: checkValidity(inputValue, controls[inputIdentifier].validation),
+        touched: true,
+      }),
+    });
     let formIsValid = true;
     Object.keys(updatedControls).forEach((input) => {
       formIsValid = updatedControls[input].valid && formIsValid;
@@ -245,4 +226,4 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);
 
-/* eslint class-methods-use-this: 'off', max-len: "off", arrow-body-style: "off" */
+/* eslint arrow-body-style: "off" */

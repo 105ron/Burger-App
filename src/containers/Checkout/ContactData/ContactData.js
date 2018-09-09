@@ -8,6 +8,7 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../../store/actions/index';
+import { updateObject, checkValidity } from '../../../shared/utility';
 
 const Contact = styled.div`
   margin: 20px auto;
@@ -39,6 +40,7 @@ class ContactData extends Component {
           value: '',
           validation: {
             required: true,
+            minLength: 3,
           },
           valid: false,
           touched: false,
@@ -68,6 +70,7 @@ class ContactData extends Component {
           value: '',
           validation: {
             required: true,
+            minLength: 3,
           },
           valid: false,
           touched: false,
@@ -99,6 +102,7 @@ class ContactData extends Component {
           value: '',
           validation: {
             required: true,
+            minLength: 3,
           },
           valid: false,
           touched: false,
@@ -141,36 +145,17 @@ class ContactData extends Component {
     onOrderBurger(order, token);
   }
 
-  checkValidity(value, rules) {
-    let isValid = true;
-    if (rules.required) {
-      isValid = value.trim() !== '' && isValid;
-    }
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid;
-    }
-    if (rules.maxLength) {
-      isValid = value.length <= rules.maxLength && isValid;
-    }
-    if (rules.isEmail) {
-      const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-      isValid = pattern.test(value) && isValid;
-    }
-    if (rules.isNumeric) {
-      const pattern = /^\d+$/;
-      isValid = pattern.test(value) && isValid;
-    }
-    return isValid;
-  }
-
   inputChangedHandler(event, inputIdentifier) {
     const { orderForm } = this.state;
-    const updatedOrderForm = { ...orderForm };
-    const updatedFormElement = { ...updatedOrderForm[inputIdentifier] };
-    updatedFormElement.value = event.target.value;
-    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
-    updatedFormElement.touched = true;
-    updatedOrderForm[inputIdentifier] = updatedFormElement;
+    const { target: { value: inputValue } } = event;
+    const updatedFormElement = updateObject(orderForm[inputIdentifier], {
+      value: inputValue,
+      valid: checkValidity(inputValue, orderForm[inputIdentifier].validation),
+      touched: true,
+    });
+    const updatedOrderForm = updateObject(orderForm, {
+      [inputIdentifier]: updatedFormElement,
+    });
     let formIsValid = true;
     Object.keys(updatedOrderForm).forEach((input) => {
       formIsValid = updatedOrderForm[input].valid && formIsValid;
@@ -261,5 +246,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData, axios));
-
-/* eslint class-methods-use-this: 'off', max-len: "off" */
