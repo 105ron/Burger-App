@@ -16,7 +16,9 @@ import authReducer from './store/reducers/auth';
 
 require('dotenv').config();
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = process.env.NODE_ENV === 'development'
+  ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+  : null || compose;
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -44,4 +46,4 @@ const app = (
 ReactDOM.render(app, document.getElementById('root'));
 registerServiceWorker();
 
-/* eslint no-undef: "off", no-unused-expressions: "off", no-underscore-dangle: "off" */
+/* eslint no-undef: "off", no-unused-expressions: "off", no-underscore-dangle: "off", import/no-extraneous-dependencies: "off" */
