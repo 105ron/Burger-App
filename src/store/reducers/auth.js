@@ -34,7 +34,7 @@ function authLogout(state) {
 }
 
 function setAuthRedirectPath(state, action) {
-  return updateObject(state, { authRedirectPath: action.path });
+  return updateObject(state, { authRedirect: action.path });
 }
 
 function reducer(state = initialState, action) {

@@ -2,6 +2,7 @@ module.exports = {
   "extends": "airbnb",
   "env": {
     "browser": true,
+    "jest": true
   },
   "rules": {
     "import/named": 0,
